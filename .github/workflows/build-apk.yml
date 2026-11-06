@@ -4,9 +4,14 @@ name: Construire iGO Map Reader APK
 on:
   workflow_dispatch:
 
+env:
+  ANDROID_HOME: /usr/local/lib/android/sdk
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Recuperer le projet
         uses: actions/checkout@v4
@@ -18,10 +23,12 @@ jobs:
           java-version: '17'
 
       - name: Installer Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Installer les composants Android
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-36" \
+            "build-tools;36.0.0" \
+            "platform-tools"
 
       - name: Installer Gradle
         uses: gradle/actions/setup-gradle@v4
